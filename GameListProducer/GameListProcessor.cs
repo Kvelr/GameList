@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GameListProducer
 {
-    public class GameListProcessor
+    public class GameListProcessor : IGamesProcessor
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IRequestCreator _requestCreator;
@@ -17,20 +16,21 @@ namespace GameListProducer
             _requestCreator = requestCreator;
         }
 
-        public async Task<IEnumerable<string>> GetGameList()
+        public async Task<string> GetGameList()
         {
+            string gameList = null;
             var request = _requestCreator.GetHttpRequest();
             var client = _clientFactory.CreateClient();
-            var response = await client.SendAsync(request);
 
+            using var response = await client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                var gameList = responseStream.ToString();
-               
+                var straemReader = new StreamReader(responseStream, Encoding.UTF8);
+                gameList = await straemReader.ReadToEndAsync();
             }
 
-            throw new NotImplementedException();
+            return gameList;
         }
 
     }

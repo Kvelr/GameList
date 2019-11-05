@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +10,7 @@ namespace GameListProducer
 {
     public class Startup
     {
-        private  IConfiguration Configuration { get; set; }
+        private IConfiguration Configuration { get; set; }
         public Startup(IConfiguration config)
         {
             Configuration = config;
@@ -25,8 +21,16 @@ namespace GameListProducer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IRequestCreator, GameListRequestCreator>();
-            services.Configure<GameListConfig>(Configuration.GetSection("LiveScoresSettings"));
+            services.AddSingleton<IRequestCreator, GameListRequestCreator>();
+            services.AddSingleton<IGamesProcessor, GameListProcessor>();
+            services.AddSingleton(glc => new GameListRequestConfig()
+            {
+                Key = Configuration.GetValue<string>("LiveScoresSettings:key"),
+                Secret = Configuration.GetValue<string>("LiveScoresSettings:secret"),
+                Url = Configuration.GetValue<string>("LiveScoresSettings:url"),
+            });
+            services.AddHttpClient();
+            services.AddHostedService<TimedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +47,7 @@ namespace GameListProducer
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    await context.Response.WriteAsync("Service is running !!!");
                 });
             });
         }

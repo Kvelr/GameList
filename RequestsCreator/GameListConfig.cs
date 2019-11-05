@@ -1,6 +1,6 @@
 ﻿namespace RequestsCreator
 {
-    public class GameListConfig 
+    public class GameListRequestConfig 
     {
         public string Key { get; set; }
         public string Secret { get; set; }
