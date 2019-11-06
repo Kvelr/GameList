@@ -7,7 +7,7 @@ namespace GameListConsumer
 {
     public class HostedService : IHostedService
     {
-        private IQueueReceiver _rabbitMQReceiver;
+        private readonly IQueueReceiver _rabbitMQReceiver;
 
         public HostedService(IQueueReceiver rabbitMQReceiver)
         {

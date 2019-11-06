@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using GameListDal;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -8,9 +9,12 @@ namespace QueueReceiver
     public class RabbitMQReceiver : IQueueReceiver
     {
         private readonly RabbitMQReceiverConfig _rabbitMQReceiverConfig;
-        public RabbitMQReceiver(IOptions<RabbitMQReceiverConfig> rabbitMQReceiverConfig)
+        private readonly GamesDal _games;
+
+        public RabbitMQReceiver(IOptions<RabbitMQReceiverConfig> rabbitMQReceiverConfig, GamesDal gamesDal)
         {
             _rabbitMQReceiverConfig = rabbitMQReceiverConfig.Value;
+            _games = gamesDal;
         }
 
         public void ReciveMessage()
@@ -26,9 +30,7 @@ namespace QueueReceiver
                                  arguments: null);            
 
                 var consumer = new QueueingBasicConsumer(channel);
-                channel.BasicConsume(_rabbitMQReceiverConfig.QueueName, true, consumer);
-
-                var i = 0;
+                channel.BasicConsume(_rabbitMQReceiverConfig.QueueName, true, consumer);            
 
                 while (true)
                 {

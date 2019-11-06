@@ -1,7 +1,10 @@
 using System.IO;
+using GameListCommon;
+using GameListDal;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,9 +21,12 @@ namespace GameListConsumer
             var config = BuildConfiguration();
             RegisterOptions(services, config);
             RegisterClasses(services);
-          
+
+            services.AddDbContext<GameListDBContext>(options =>
+            options.UseSqlServer(config.GetConnectionString("GamesDBConnection")));
+
             services.AddHostedService<HostedService>();
-        }     
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -52,14 +58,14 @@ namespace GameListConsumer
 
         private void RegisterClasses(IServiceCollection services)
         {
-            services.AddSingleton<IQueueReceiver, RabbitMQReceiver>();          
+            services.AddSingleton<IQueueReceiver, RabbitMQReceiver>();
+            services.AddSingleton<GamesDal>();
         }
 
         private void RegisterOptions(IServiceCollection services, IConfigurationRoot config)
         {
-                                                                        
-            services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));        
+            services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));
         }
-        
+
     }
 }
