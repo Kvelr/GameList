@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QueueSender\QueueSender.csproj" />
-    <ProjectReference Include="..\RequestsCreator\RequestsCreator.csproj" />
+    <ProjectReference Include="..\QueueReceiver\QueueReceiver.csproj" />
   </ItemGroup>
 
 </Project>

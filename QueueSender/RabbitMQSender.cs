@@ -1,31 +1,37 @@
-﻿using RabbitMQ.Client;
+﻿using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace QueueSender
 {
-    public class RabbitMQSender
+    public class RabbitMQSender : IQueueSender
     {
-        private readonly string hostName;
-        private readonly string queueName;
-        private readonly string routingKey;
+        private readonly RabbitMQSenderConfiguration _rabbitMQSenderConfiguration;
 
-        public RabbitMQSender()
-        {           
+        public RabbitMQSender(IOptions<RabbitMQSenderConfiguration> rabbitMQSenderConfiguration)
+        {
+            _rabbitMQSenderConfiguration = rabbitMQSenderConfiguration.Value;
         }
 
         public void SendMessage(string message)
         {         
-            var factory = new ConnectionFactory() { HostName = hostName };
+            var factory = new ConnectionFactory() { HostName = _rabbitMQSenderConfiguration.HostName };
             using (var connection = factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
                 {
                     //Todo: get from config
-                    channel.QueueDeclare(queueName);
+                    channel.QueueDeclare(queue:_rabbitMQSenderConfiguration.QueueName,
+                                         durable: false,
+                                          exclusive: false,
+                                          autoDelete: false,
+                                          arguments: null);
                     var body = Encoding.UTF8.GetBytes(message);
 
-                    channel.BasicPublish("", routingKey, null, body);
+                    channel.BasicPublish(exchange:"",
+                                            routingKey: _rabbitMQSenderConfiguration.RoutingKey,
+                                            basicProperties: null,
+                                            body: body);
                 }
             }
         }
