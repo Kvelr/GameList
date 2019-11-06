@@ -2,7 +2,7 @@
 using RequestsCreator;
 using System.Net.Http;
 
-namespace GameListProducer
+namespace RequestsCreator
 {
     public class GameListRequestCreator : IRequestCreator
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace GameListProducer
+namespace RequestsCreator
 {
     public interface IRequestCreator
     {
