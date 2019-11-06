@@ -58,7 +58,7 @@ namespace GameListConsumer
         private void RegisterOptions(IServiceCollection services, IConfigurationRoot config)
         {
                                                                         
-            //services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));        
+            services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));        
         }
         
     }

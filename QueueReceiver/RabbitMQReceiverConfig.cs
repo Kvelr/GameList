@@ -2,7 +2,7 @@
 {
     public class RabbitMQReceiverConfig
     {
-        public string QueueName { get; internal set; }
-        public string HostName { get; internal set; }       
+        public string QueueName { get; set; }
+        public string HostName { get; set; }
     }
 }

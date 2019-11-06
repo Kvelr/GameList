@@ -26,6 +26,7 @@ namespace GameListProducer
             RegisterOptions(services, config);
             RegisterClasses(services);
 
+            services.AddHttpClient();
             services.AddHostedService<TimedHostedService>();
         }
 

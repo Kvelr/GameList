@@ -30,13 +30,18 @@ namespace QueueReceiver
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
                 {
-                    var body = ea.Body;
-                    var message = Encoding.UTF8.GetString(body);
+                    NewMethod(ea);
                 };
                 channel.BasicConsume(queue: _rabbitMQReceiverConfig.QueueName,
                                      autoAck: true,
                                      consumer: consumer);
             }
-        }      
+        }
+
+        private static void NewMethod(BasicDeliverEventArgs ea)
+        {
+            var body = ea.Body;
+            var message = Encoding.UTF8.GetString(body);
+        }
     }
 }
