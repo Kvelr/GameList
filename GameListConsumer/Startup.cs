@@ -18,8 +18,8 @@ namespace GameListConsumer
             var config = BuildConfiguration();
             RegisterOptions(services, config);
             RegisterClasses(services);
-
-            services.AddHostedService<RabbitMQReceiver>();
+          
+            services.AddHostedService<HostedService>();
         }     
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,13 +50,16 @@ namespace GameListConsumer
             return config;
         }
 
-        private void RegisterOptions(IServiceCollection services, IConfigurationRoot config)
-        {
-            services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));        
-        }
         private void RegisterClasses(IServiceCollection services)
         {
-            services.AddSingleton<IQueueReceiver,RabbitMQReceiver>();
+            services.AddSingleton<IQueueReceiver, RabbitMQReceiver>();          
         }
+
+        private void RegisterOptions(IServiceCollection services, IConfigurationRoot config)
+        {
+                                                                        
+            //services.Configure<RabbitMQReceiverConfig>(config.GetSection("RabbitMQReceiverConfig"));        
+        }
+        
     }
 }

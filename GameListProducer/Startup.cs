@@ -24,10 +24,8 @@ namespace GameListProducer
 
             // register all the sections that we want to inject
             RegisterOptions(services, config);
-
             RegisterClasses(services);
 
-            services.AddHttpClient();
             services.AddHostedService<TimedHostedService>();
         }
 

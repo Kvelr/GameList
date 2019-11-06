@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace QueueReceiver
 {
-    public class RabbitMQReceiver : IQueueReceiver, IHostedService
+    public class RabbitMQReceiver : IQueueReceiver
     {
         private readonly RabbitMQReceiverConfig _rabbitMQReceiverConfig;
 
@@ -40,16 +37,6 @@ namespace QueueReceiver
                                      autoAck: true,
                                      consumer: consumer);
             }
-        }
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            return Task.Run(() => ReciveMessage());
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
+        }      
     }
 }
