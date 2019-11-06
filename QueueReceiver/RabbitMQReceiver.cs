@@ -8,11 +8,9 @@ namespace QueueReceiver
     public class RabbitMQReceiver : IQueueReceiver
     {
         private readonly RabbitMQReceiverConfig _rabbitMQReceiverConfig;
-
         public RabbitMQReceiver(IOptions<RabbitMQReceiverConfig> rabbitMQReceiverConfig)
         {
             _rabbitMQReceiverConfig = rabbitMQReceiverConfig.Value;
-            ReciveMessage();
         }
 
         public void ReciveMessage()
@@ -25,23 +23,20 @@ namespace QueueReceiver
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
-                                 arguments: null);
+                                 arguments: null);            
 
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                var consumer = new QueueingBasicConsumer(channel);
+                channel.BasicConsume(_rabbitMQReceiverConfig.QueueName, true, consumer);
+
+                var i = 0;
+
+                while (true)
                 {
-                    NewMethod(ea);
-                };
-                channel.BasicConsume(queue: _rabbitMQReceiverConfig.QueueName,
-                                     autoAck: true,
-                                     consumer: consumer);
+                    var ea = consumer.Queue.Dequeue();
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);                  
+                }                
             }
-        }
-
-        private static void NewMethod(BasicDeliverEventArgs ea)
-        {
-            var body = ea.Body;
-            var message = Encoding.UTF8.GetString(body);
-        }
+        }      
     }
 }
