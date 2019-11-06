@@ -1,17 +1,21 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace QueueReceiver
 {
-    public class RabbitMQReceiver
+    public class RabbitMQReceiver : IQueueReceiver, IHostedService
     {
-        private RabbitMQReceiverConfig _rabbitMQReceiverConfig;
+        private readonly RabbitMQReceiverConfig _rabbitMQReceiverConfig;
 
         public RabbitMQReceiver(IOptions<RabbitMQReceiverConfig> rabbitMQReceiverConfig)
         {
-            var _rabbitMQReceiverConfig = rabbitMQReceiverConfig.Value;
+            _rabbitMQReceiverConfig = rabbitMQReceiverConfig.Value;
+            ReciveMessage();
         }
 
         public void ReciveMessage()
@@ -32,10 +36,20 @@ namespace QueueReceiver
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                 };
-                channel.BasicConsume(queue: "hello",
+                channel.BasicConsume(queue: _rabbitMQReceiverConfig.QueueName,
                                      autoAck: true,
                                      consumer: consumer);
             }
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.Run(() => ReciveMessage());
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

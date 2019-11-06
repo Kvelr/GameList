@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +18,8 @@ namespace GameListConsumer
             var config = BuildConfiguration();
             RegisterOptions(services, config);
             RegisterClasses(services);
+
+            services.AddHostedService<RabbitMQReceiver>();
         }     
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,7 +36,7 @@ namespace GameListConsumer
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    await context.Response.WriteAsync("GameListConsumer is running!");
                 });
             });
         }
@@ -58,7 +56,7 @@ namespace GameListConsumer
         }
         private void RegisterClasses(IServiceCollection services)
         {
-           
+            services.AddSingleton<IQueueReceiver,RabbitMQReceiver>();
         }
     }
 }
