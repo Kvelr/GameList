@@ -1,4 +1,5 @@
-﻿using RequestsCreator;
+﻿using Microsoft.Extensions.Options;
+using RequestsCreator;
 using System.Net.Http;
 
 namespace GameListProducer
@@ -9,9 +10,9 @@ namespace GameListProducer
         private const string key = "key";
         private const string secret = "secret";
 
-        public GameListRequestCreator(GameListRequestConfig gameListConfig)
+        public GameListRequestCreator(IOptions<GameListRequestConfig> gameListConfig)
         {
-            _gameListConfig = gameListConfig;
+            _gameListConfig = gameListConfig.Value;
         }
 
         public HttpRequestMessage GetHttpRequest()
