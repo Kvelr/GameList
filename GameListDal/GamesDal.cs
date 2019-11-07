@@ -7,17 +7,16 @@ namespace GameListDal
 {
     public class GamesDal
     {
+        private GameListDBContext _ctx;
+
         public GamesDal(GameListDBContext ctx)
-        {       
-                ctx.Games.Add(new Game
-                {
-                    AwayTeamName = "me",
-                    ContestName = "context",
-                    HomeTeamName = "home",
-                    LeagueName = "league",
-                    SportType = SportTypes.soccer,
-                    StartDate = DateTime.Now
-                });         
+        {
+            _ctx = ctx;
+        }
+
+        public void AddGame(Game gameToAdd)
+        {
+            _ctx.Games.Add(gameToAdd);
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameListCommon
 {
@@ -10,5 +7,9 @@ namespace GameListCommon
         public GameListDBContext(DbContextOptions<GameListDBContext> options) : base(options) { }
         public DbSet<Game> Games { get; set; }
 
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(@"server=DESKTOP-CTS13TM;Database=GameList;Trusted_Connection=True;");
+        //}
     }
 }

@@ -25,7 +25,9 @@ namespace GameListConsumer
             services.AddDbContext<GameListDBContext>(options =>
             options.UseSqlServer(config.GetConnectionString("GamesDBConnection")));
 
-            services.AddHostedService<HostedService>();
+            var sp = services.BuildServiceProvider();
+            var queueReceiver = sp.GetService<IQueueReceiver>();
+            queueReceiver.ReciveMessage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,8 +60,8 @@ namespace GameListConsumer
 
         private void RegisterClasses(IServiceCollection services)
         {
-            services.AddSingleton<IQueueReceiver, RabbitMQReceiver>();
-            services.AddSingleton<GamesDal>();
+            services.AddScoped<IQueueReceiver, RabbitMQReceiver>();
+            services.AddScoped<GamesDal>();          
         }
 
         private void RegisterOptions(IServiceCollection services, IConfigurationRoot config)

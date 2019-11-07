@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace GameListConsumer
@@ -16,10 +15,6 @@ namespace GameListConsumer
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-             .ConfigureServices(services =>
-             {
-                 services.AddHostedService<HostedService>();
-             });
+                });           
     }
 }

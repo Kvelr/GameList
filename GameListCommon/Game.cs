@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace GameListCommon
 {
     public class Game
     {
+        [Key]
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public string ContestName { get; set; }
